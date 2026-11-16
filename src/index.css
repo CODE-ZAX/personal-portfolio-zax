@@ -1,0 +1,158 @@
+@import "tailwindcss";
+
+/*
+  Visual direction follows MiniMax frontend-dev:
+  https://github.com/MiniMax-AI/skills/blob/main/skills/frontend-dev/SKILL.md
+  Dials: DESIGN_VARIANCE 8, MOTION_INTENSITY 6, VISUAL_DENSITY 4.
+  One accent, Outfit + Geist, asymmetric split, no equal card row.
+  Motion intensity stays at 6 (fluid): reveals, stagger, layout, magnetic, tilt.
+  GSAP pin/hijack is intensity 7+ and is left out to keep the bundle small.
+*/
+
+@theme {
+  --font-sans: "Geist Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --color-paper: #e7ece8;
+  --color-ink: #1a211c;
+  --color-surface: #f7f8f5;
+  --color-line: #c5d0c8;
+  --color-accent: #145c38;
+  --color-muted: #3d4a42;
+  --color-soft: #d5ddd7;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+}
+
+section {
+  scroll-margin-top: 5.5rem;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 70;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  height: 3px;
+  width: 100%;
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  animation: scroll-grow linear both;
+  animation-timeline: scroll(root);
+}
+
+@keyframes scroll-grow {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@supports not (animation-timeline: scroll()) {
+  .scroll-progress {
+    display: none;
+  }
+}
+
+.live-dot {
+  display: inline-block;
+  width: 0.55rem;
+  height: 0.55rem;
+  margin-right: 0.55rem;
+  border-radius: 999px;
+  background: var(--color-accent);
+  animation: live-pulse 2.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+html[data-motion="running"] .live-dot {
+  will-change: transform;
+}
+
+html[data-motion="paused"] .live-dot {
+  animation-play-state: paused;
+}
+
+@keyframes live-pulse {
+  50% {
+    opacity: 0.45;
+    transform: scale(0.7);
+  }
+}
+
+.skeleton {
+  background: var(--color-soft);
+  animation: skeleton-fade 1.2s ease-in-out infinite;
+}
+
+@keyframes skeleton-fade {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.text-link {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+}
+
+.text-link:hover {
+  text-decoration-thickness: 2px;
+}
+
+.tactile:active {
+  transform: scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .scroll-progress,
+  .live-dot {
+    animation: none !important;
+  }
+}
