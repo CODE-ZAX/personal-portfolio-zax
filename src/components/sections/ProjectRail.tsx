@@ -6,6 +6,7 @@ import { projectPictureFor } from "../../data/media";
 import { slug } from "../../lib/slug";
 import { getLenis, subscribeLenis } from "../../motion/lenisBridge";
 import { ProjectCard } from "../projects/ProjectCard";
+import { SectionHeading } from "../../type/SectionHeading";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -73,7 +74,9 @@ export default function ProjectRail({ onOpen }: { onOpen: (repo: string) => void
         <header className="flex items-end justify-between gap-8 px-4 md:px-8">
           <div>
             <p className="font-display text-sm uppercase tracking-[0.18em] text-accent-text">Selected work</p>
-            <h2 className="mt-2 max-w-[12ch] font-display text-4xl tracking-tighter md:text-6xl">The products he ships.</h2>
+            <SectionHeading travel="work" className="mt-2 max-w-[12ch]">
+              The products he ships.
+            </SectionHeading>
           </div>
           <p className="hidden max-w-[36ch] text-sm leading-relaxed text-muted lg:block">
             Scroll to move across the set. Each summary is taken from the repository README. Open a card for the longer note.

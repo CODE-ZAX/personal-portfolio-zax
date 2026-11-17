@@ -3,6 +3,7 @@ import type { FocusEvent } from "react";
 import type { Project } from "../../data/profile";
 import type { Picture as PictureSource } from "../../data/media";
 import { useMotionPrefs } from "../../motion/MotionProvider";
+import { sceneKindForRepo, useSceneView } from "../../three/bridge";
 import { Picture } from "../media/Picture";
 
 type Props = {
@@ -16,6 +17,8 @@ type Props = {
 
 export function ProjectCard({ project, image, layoutId, onOpen, onReveal, className }: Props) {
   const { reduced, fine } = useMotionPrefs();
+  const SceneView = useSceneView();
+  const kind = sceneKindForRepo(project.repo);
   const tilt = fine && !reduced;
   const px = useMotionValue(0.5);
   const py = useMotionValue(0.5);
@@ -49,7 +52,10 @@ export function ProjectCard({ project, image, layoutId, onOpen, onReveal, classN
       <motion.span className="block h-full" style={{ rotateX, rotateY, transformPerspective: 900 }}>
       <span className="spotlight-ring pointer-events-none absolute inset-0 rounded-[1.75rem] opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100" />
       <span className="relative flex h-full flex-col overflow-hidden rounded-[1.7rem] bg-raised">
-        <Picture image={image} className="aspect-[4/3] w-full object-cover" />
+        <span className="relative block">
+          <Picture image={image} className="aspect-[4/3] w-full object-cover" />
+          {SceneView && kind ? <SceneView kind={kind} className="pointer-events-none absolute inset-0" /> : null}
+        </span>
         <span className="flex flex-1 flex-col px-5 py-4">
           <span className="font-display text-xs uppercase tracking-[0.16em] text-accent-text">
             {project.surface}

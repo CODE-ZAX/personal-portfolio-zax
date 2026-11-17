@@ -5,6 +5,8 @@ import { profile, type Project } from "../../data/profile";
 import { projectPictureFor } from "../../data/media";
 import { slug } from "../../lib/slug";
 import { getLenis } from "../../motion/lenisBridge";
+import { sceneKindForRepo, useSceneView } from "../../three/bridge";
+import { SectionHeading } from "../../type/SectionHeading";
 import { Picture } from "../media/Picture";
 
 export function ProjectModal({ openRepo, onClose }: { openRepo: string | null; onClose: () => void }) {
@@ -74,6 +76,8 @@ function Dialog({
   onClose: () => void;
 }) {
   const image = projectPictureFor(project.repo);
+  const SceneView = useSceneView();
+  const kind = sceneKindForRepo(project.repo);
   const titleId = `title-${slug(project.repo)}`;
   const links = [
     { label: "Open the repository", url: project.url },
@@ -102,11 +106,14 @@ function Dialog({
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
       >
         <div className="relative">
-          {image ? <Picture image={image} className="h-[34vh] w-full object-cover" /> : null}
+          {image ? (
+            <Picture image={image} className="h-[34vh] w-full object-cover" />
+          ) : null}
+          {SceneView && kind ? <SceneView kind={kind} className="pointer-events-none absolute inset-0" /> : null}
           <button
             type="button"
             data-close
-            className="tactile absolute right-4 top-4 rounded-full border border-white/20 bg-[#1c1a17]/80 px-4 py-2 font-display text-sm text-ink backdrop-blur"
+            className="tactile absolute right-4 top-4 z-30 rounded-full border border-white/20 bg-[#1c1a17]/80 px-4 py-2 font-display text-sm text-ink backdrop-blur"
             onClick={onClose}
           >
             Close
@@ -118,9 +125,9 @@ function Dialog({
             <span aria-hidden="true"> · </span>
             {project.visibility}
           </p>
-          <h2 id={titleId} className="mt-3 font-display text-4xl tracking-tighter text-ink md:text-6xl">
+          <SectionHeading as="h2" id={titleId} travel="none" className="mt-3 max-w-[14ch] text-ink">
             {project.name}
-          </h2>
+          </SectionHeading>
           <p className="mt-4 max-w-[65ch] text-base leading-relaxed text-muted">{project.summary}</p>
           <p className="mt-5 max-w-[65ch] text-base leading-relaxed text-ink">{project.detail}</p>
           <p className="mt-6 font-display text-sm uppercase tracking-[0.16em] text-muted">Stack</p>

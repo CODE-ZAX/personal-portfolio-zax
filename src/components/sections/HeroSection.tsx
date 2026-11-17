@@ -4,6 +4,7 @@ import { MagneticLink } from "../../motion/MagneticLink";
 import { MaskReveal } from "../../motion/MaskReveal";
 import { ScrambleText } from "../../motion/ScrambleText";
 import { HeroVisual } from "../hero/HeroVisual";
+import { SectionHeading } from "../../type/SectionHeading";
 
 export function HeroSection() {
   return (
@@ -19,9 +20,9 @@ export function HeroSection() {
             <span aria-hidden="true"> · </span>
             {profile.company}
           </p>
-          <h1 className="mt-6 max-w-[12ch] font-display text-4xl tracking-tighter text-ink md:text-6xl">
-            <MaskReveal>{profile.name}</MaskReveal>
-          </h1>
+          <SectionHeading as="h1" travel="hero" className="mt-6 max-w-[12ch] text-ink">
+            {profile.name}
+          </SectionHeading>
           <p className="mt-4 max-w-[18ch] font-display text-2xl tracking-tight text-ink md:text-3xl">
             <MaskReveal delay={0.12}>{profile.headline}</MaskReveal>
           </p>

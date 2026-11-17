@@ -1,5 +1,6 @@
 import { profile } from "../../data/profile";
 import { MagneticLink } from "../../motion/MagneticLink";
+import { SectionHeading } from "../../type/SectionHeading";
 
 export function ContactSection() {
   const primary = profile.contact.find((item) => item.href.startsWith("mailto:"));
@@ -7,11 +8,13 @@ export function ContactSection() {
 
   return (
     <section id="contact" className="relative px-4 py-20 md:px-8 md:py-28">
-      <div className="topo pointer-events-none absolute inset-0" aria-hidden="true" />
+      <div className="topo pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+        <div className="topo-drift" />
+      </div>
       <div className="relative mx-auto grid w-full max-w-[1400px] gap-10 md:grid-cols-12">
         <div className="md:col-span-7">
           <p className="font-display text-sm uppercase tracking-[0.18em] text-accent-text">Contact</p>
-          <h2 className="mt-3 max-w-[10ch] font-display text-4xl tracking-tighter md:text-6xl">Write to Faraz.</h2>
+          <SectionHeading className="mt-3 max-w-[10ch]">Write to Faraz.</SectionHeading>
           <p className="mt-5 max-w-[65ch] text-base leading-relaxed text-muted">{profile.contactIntro}</p>
           {primary ? (
             <MagneticLink
