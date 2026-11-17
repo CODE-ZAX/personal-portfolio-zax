@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { profile } from "../../data/profile";
+import { useProfile, useSection } from "../../data/content";
 import { projectPictureFor } from "../../data/media";
 import { slug } from "../../lib/slug";
 import { getLenis, subscribeLenis } from "../../motion/lenisBridge";
@@ -11,6 +11,8 @@ import { SectionHeading } from "../../type/SectionHeading";
 gsap.registerPlugin(ScrollTrigger);
 
 export default function ProjectRail({ onOpen }: { onOpen: (repo: string) => void }) {
+  const profile = useProfile();
+  const section = useSection("work");
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLUListElement>(null);
 
@@ -75,7 +77,7 @@ export default function ProjectRail({ onOpen }: { onOpen: (repo: string) => void
           <div>
             <p className="font-display text-sm uppercase tracking-[0.18em] text-accent-text">Selected work</p>
             <SectionHeading travel="work" className="mt-2 max-w-[12ch]">
-              The products he ships.
+              {section?.heading || "The products he ships."}
             </SectionHeading>
           </div>
           <p className="hidden max-w-[36ch] text-sm leading-relaxed text-muted lg:block">

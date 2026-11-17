@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useState } from "react";
-import { profile } from "../../data/profile";
+import { useProfile } from "../../data/content";
 import { EmptyState } from "../ui/EmptyState";
 import { ProjectsSkeleton } from "../ui/ProjectsSkeleton";
 import { ProjectModal } from "../projects/ProjectModal";
@@ -28,6 +28,7 @@ function useRail() {
 }
 
 export default function ProjectsSection() {
+  const profile = useProfile();
   const rail = useRail();
   const [open, setOpen] = useState<string | null>(null);
   const onClose = useCallback(() => setOpen(null), []);

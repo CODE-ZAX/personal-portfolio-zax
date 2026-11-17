@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { profile } from "../../data/profile";
+import { useProfile, useSection } from "../../data/content";
 import { useMotionPrefs } from "../../motion/MotionProvider";
 import { SectionHeading } from "../../type/SectionHeading";
 
@@ -19,6 +19,8 @@ const row = {
 };
 
 export function PracticeSection() {
+  const profile = useProfile();
+  const section = useSection("practice");
   const { reduced } = useMotionPrefs();
   return (
     <section id="practice" className="relative px-4 py-20 md:px-8 md:py-28">
@@ -28,7 +30,7 @@ export function PracticeSection() {
       <div className="relative mx-auto grid w-full max-w-[1400px] gap-10 md:grid-cols-12">
         <div className="md:col-span-4">
           <p className="font-display text-sm uppercase tracking-[0.18em] text-accent-text">Practice</p>
-          <SectionHeading className="mt-3 max-w-[12ch]">The published stack.</SectionHeading>
+          <SectionHeading className="mt-3 max-w-[12ch]">{section?.heading || "The published stack."}</SectionHeading>
           <p className="mt-5 max-w-[65ch] text-base leading-relaxed text-muted">{profile.skillsIntro}</p>
         </div>
         <motion.ol

@@ -1,4 +1,4 @@
-import { profile } from "../../data/profile";
+import { useProfile } from "../../data/content";
 import { LiveDot } from "../../motion/LiveDot";
 import { MagneticLink } from "../../motion/MagneticLink";
 import { MaskReveal } from "../../motion/MaskReveal";
@@ -7,6 +7,7 @@ import { HeroVisual } from "../hero/HeroVisual";
 import { SectionHeading } from "../../type/SectionHeading";
 
 export function HeroSection() {
+  const profile = useProfile();
   return (
     <section id="top" className="relative min-h-[100dvh] px-4 pb-8 pt-28 md:px-8 md:pb-10">
       <div className="mx-auto grid w-full max-w-[1400px] items-end gap-8 md:min-h-[calc(100dvh-8rem)] md:grid-cols-12 md:items-center md:gap-6">

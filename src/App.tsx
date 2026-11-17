@@ -9,6 +9,7 @@ import { ProjectsSkeleton } from "./components/ui/ProjectsSkeleton";
 import { SectionBoundary } from "./components/ui/SectionBoundary";
 import { LenisRoot } from "./motion/LenisRoot";
 import { Marquee } from "./motion/Marquee";
+import { ContentProvider } from "./data/content";
 import { MotionProvider } from "./motion/MotionProvider";
 import { BgLoop } from "./components/media/BgLoop";
 import { loops } from "./data/media";
@@ -19,6 +20,7 @@ const ProjectsSection = lazy(() => import("./components/sections/ProjectsSection
 
 export default function App() {
   return (
+    <ContentProvider>
     <MotionProvider>
       <LenisRoot />
       <WebGLHost />
@@ -46,5 +48,6 @@ export default function App() {
         <SiteFooter />
       </div>
     </MotionProvider>
+    </ContentProvider>
   );
 }

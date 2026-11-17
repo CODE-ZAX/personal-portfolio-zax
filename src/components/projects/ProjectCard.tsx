@@ -20,7 +20,10 @@ export function ProjectCard({ project, image, layoutId, onOpen, onReveal, classN
   const { reduced, paused, fine } = useMotionPrefs();
   const SceneView = useSceneView();
   const kind = sceneKindForRepo(project.repo);
-  const loop = loopForRepo(project.repo);
+  const baseLoop = loopForRepo(project.repo);
+  const loop = baseLoop && project.videoUrl
+    ? { ...baseLoop, mp4: project.videoUrl, webm: project.videoUrl, mp4Small: project.videoUrl, webmSmall: project.videoUrl }
+    : baseLoop;
   const frameRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
@@ -43,6 +46,8 @@ export function ProjectCard({ project, image, layoutId, onOpen, onReveal, classN
       release?.();
     };
   }, [kind, fine, reduced, paused]);
+  const baseImage = image;
+  const picture = baseImage && project.coverUrl ? { ...baseImage, src: project.coverUrl, srcSet: project.coverUrl } : baseImage;
   const tilt = fine && !reduced;
   const px = useMotionValue(0.5);
   const py = useMotionValue(0.5);
@@ -77,7 +82,7 @@ export function ProjectCard({ project, image, layoutId, onOpen, onReveal, classN
       <span className="spotlight-ring pointer-events-none absolute inset-0 rounded-[1.75rem] opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100" />
       <span className="relative flex h-full flex-col overflow-hidden rounded-[1.7rem] bg-raised">
         <span ref={frameRef} className="relative block">
-          <Picture image={image} className="aspect-[4/3] w-full object-cover" />
+          {picture ? <Picture image={picture} className="aspect-[4/3] w-full object-cover" /> : null}
           {loop ? <LoopVideo loop={loop} className="absolute inset-0 h-full w-full object-cover" /> : null}
           {SceneView && kind ? <SceneView kind={kind} className="pointer-events-none absolute inset-0" /> : null}
         </span>

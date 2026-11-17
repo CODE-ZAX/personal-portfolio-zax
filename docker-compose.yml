@@ -1,0 +1,23 @@
+services:
+  portfolio:
+    image: faraz-portfolio
+    build:
+      context: .
+    restart: unless-stopped
+    expose:
+      - "80"
+
+  pocketbase:
+    image: faraz-pocketbase
+    build:
+      context: ./pocketbase
+    restart: unless-stopped
+    command: ["pocketbase", "serve", "--http=0.0.0.0:8090", "--dir=/pb_data", "--migrationsDir=/pb_migrations"]
+    volumes:
+      - pb_data:/pb_data
+      - ./pocketbase/pb_migrations:/pb_migrations:ro
+    expose:
+      - "8090"
+
+volumes:
+  pb_data:

@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { profile } from "../../data/profile";
+import { useProfile, useSection } from "../../data/content";
 import { SectionHeading } from "../../type/SectionHeading";
 
 export function AboutSection() {
+  const profile = useProfile();
+  const section = useSection("about");
   const [portraitFailed, setPortraitFailed] = useState(false);
   return (
     <section id="about" className="relative px-4 py-20 md:px-8 md:py-28">
@@ -23,7 +25,7 @@ export function AboutSection() {
         </div>
         <div className="md:col-span-6">
           <p className="font-display text-sm uppercase tracking-[0.18em] text-accent-text">About</p>
-          <SectionHeading className="mt-3 max-w-[14ch]">From architecture through the launch.</SectionHeading>
+          <SectionHeading className="mt-3 max-w-[14ch]">{section?.heading || "From architecture through the launch."}</SectionHeading>
           <div className="mt-4 md:hidden" aria-hidden="true">
             <svg className="h-16 w-full text-accent" viewBox="0 0 320 64" fill="none">
               <path

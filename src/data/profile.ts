@@ -38,6 +38,8 @@ export type Project = {
   stack: string;
   homepage?: ProjectLink;
   extraLinks?: ProjectLink[];
+  coverUrl?: string;
+  videoUrl?: string;
 };
 
 export type SkillGroup = {

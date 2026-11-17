@@ -1,8 +1,10 @@
-import { profile } from "../../data/profile";
+import { useProfile, useSection } from "../../data/content";
 import { MagneticLink } from "../../motion/MagneticLink";
 import { SectionHeading } from "../../type/SectionHeading";
 
 export function ContactSection() {
+  const profile = useProfile();
+  const section = useSection("contact");
   const primary = profile.contact.find((item) => item.href.startsWith("mailto:"));
   const rest = profile.contact.filter((item) => item !== primary);
 
@@ -14,7 +16,7 @@ export function ContactSection() {
       <div className="relative mx-auto grid w-full max-w-[1400px] gap-10 md:grid-cols-12">
         <div className="md:col-span-7">
           <p className="font-display text-sm uppercase tracking-[0.18em] text-accent-text">Contact</p>
-          <SectionHeading className="mt-3 max-w-[10ch]">Write to Faraz.</SectionHeading>
+          <SectionHeading className="mt-3 max-w-[10ch]">{section?.heading || "Write to Faraz."}</SectionHeading>
           <p className="mt-5 max-w-[65ch] text-base leading-relaxed text-muted">{profile.contactIntro}</p>
           {primary ? (
             <MagneticLink

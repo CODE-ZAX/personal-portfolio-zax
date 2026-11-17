@@ -1,7 +1,8 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, type RefObject } from "react";
 import { createPortal } from "react-dom";
-import { profile, type Project } from "../../data/profile";
+import { useProfile } from "../../data/content";
+import type { Project } from "../../data/profile";
 import { loopForRepo, projectPictureFor } from "../../data/media";
 import { slug } from "../../lib/slug";
 import { getLenis } from "../../motion/lenisBridge";
@@ -11,6 +12,7 @@ import { LoopVideo } from "../media/LoopVideo";
 import { Picture } from "../media/Picture";
 
 export function ProjectModal({ openRepo, onClose }: { openRepo: string | null; onClose: () => void }) {
+  const profile = useProfile();
   const project = profile.projects.find((item) => item.repo === openRepo) ?? null;
   const dialogRef = useRef<HTMLDivElement>(null);
 
@@ -79,7 +81,11 @@ function Dialog({
   const image = projectPictureFor(project.repo);
   const SceneView = useSceneView();
   const kind = sceneKindForRepo(project.repo);
-  const loop = loopForRepo(project.repo);
+  const baseLoop = loopForRepo(project.repo);
+  const loop = baseLoop && project.videoUrl
+    ? { ...baseLoop, mp4: project.videoUrl, webm: project.videoUrl, mp4Small: project.videoUrl, webmSmall: project.videoUrl }
+    : baseLoop;
+  const picture = image && project.coverUrl ? { ...image, src: project.coverUrl, srcSet: project.coverUrl } : image;
   const titleId = `title-${slug(project.repo)}`;
   const links = [
     { label: "Open the repository", url: project.url },
@@ -108,8 +114,8 @@ function Dialog({
         transition={{ type: "spring", stiffness: 100, damping: 20 }}
       >
         <div className="relative">
-          {image ? (
-            <Picture image={image} className="h-[34vh] w-full object-cover" />
+          {picture ? (
+            <Picture image={picture} className="h-[34vh] w-full object-cover" />
           ) : null}
           {loop ? <LoopVideo loop={loop} className="absolute inset-0 h-full w-full object-cover" /> : null}
           {SceneView && kind ? <SceneView kind={kind} className="pointer-events-none absolute inset-0" /> : null}
