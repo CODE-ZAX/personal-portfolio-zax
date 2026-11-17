@@ -1,0 +1,410 @@
+@import "tailwindcss";
+
+/*
+  Graphite Current.
+  Dials: DESIGN_VARIANCE 9, MOTION_INTENSITY 9, VISUAL_DENSITY 4.
+  Outfit for display, Geist for text, one cedar accent.
+*/
+
+@font-face {
+  font-family: "Outfit";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/outfit-latin-500.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Outfit";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/outfit-latin-600.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Geist Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/geist-sans-latin-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Geist Sans";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/geist-sans-latin-500.woff2") format("woff2");
+}
+
+@theme {
+  --font-sans: "Geist Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --color-graphite: #141311;
+  --color-ink: #f4efe8;
+  --color-muted: #c9c0b6;
+  --color-surface: #1c1a17;
+  --color-raised: #262320;
+  --color-line: #3a342c;
+  --color-accent: #c9844a;
+  --color-accent-text: #e7b184;
+  --color-accent-ink: #1a120c;
+}
+
+html {
+  background: var(--color-graphite);
+  color: var(--color-ink);
+  scroll-behavior: auto;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--color-graphite);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+}
+
+section {
+  scroll-margin-top: 6.5rem;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent-text);
+  outline-offset: 3px;
+}
+
+.dock-scroll {
+  scrollbar-width: none;
+}
+
+.dock-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 80;
+  background: var(--color-surface);
+  color: var(--color-ink);
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  height: 3px;
+  width: 100%;
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  animation: scroll-grow linear both;
+  animation-timeline: scroll(root);
+}
+
+@keyframes scroll-grow {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@supports not (animation-timeline: scroll()) {
+  .scroll-progress {
+    display: none;
+  }
+}
+
+.live-dot {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--color-accent);
+  animation: live-pulse 2.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+html[data-motion="running"] .live-dot,
+html[data-motion="running"] .marquee-track {
+  will-change: transform;
+}
+
+html[data-motion="paused"] .live-dot,
+html[data-motion="paused"] .marquee-track,
+html[data-motion="paused"] .draw-path {
+  animation-play-state: paused;
+}
+
+@keyframes live-pulse {
+  50% {
+    opacity: 0.4;
+    transform: scale(0.72);
+  }
+}
+
+.marquee-track {
+  animation: marquee 42s linear infinite;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.draw-path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 1.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@supports (animation-timeline: view()) {
+  .draw-path {
+    animation: draw linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 70%;
+  }
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.mask-chapter {
+  background: var(--color-graphite);
+}
+
+.mask-zoom {
+  transform-origin: center center;
+}
+
+.video-letter-mask {
+  mask-image: var(--letter-mask);
+  -webkit-mask-image: var(--letter-mask);
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: 92% auto;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: 92% auto;
+}
+
+html[data-motion="running"] .mask-zoom-css {
+  animation: mask-grow linear both;
+  animation-timeline: view();
+  animation-range: entry 8% cover 88%;
+}
+
+html[data-motion="running"] .mask-full {
+  animation: mask-fade linear both;
+  animation-timeline: view();
+  animation-range: cover 62% cover 96%;
+}
+
+@keyframes mask-grow {
+  from {
+    transform: scale(0.72);
+  }
+  to {
+    transform: scale(3.4);
+  }
+}
+
+@keyframes mask-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.display {
+  position: relative;
+  z-index: 30;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2.35rem, 5.4vw, 5.25rem);
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.display-rest {
+  display: inline;
+  animation: display-in 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+html[data-motion="paused"] .display-rest,
+html[data-reduce="true"] .display-rest {
+  animation: none;
+}
+
+@keyframes display-in {
+  from {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0.35;
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    opacity: 1;
+  }
+}
+
+.k-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.08em;
+}
+
+.k-piece {
+  display: inline-block;
+}
+
+.k-gap {
+  display: inline-block;
+  width: 0.28em;
+}
+
+.hero-visual {
+  mask-image: linear-gradient(180deg, transparent, #fff 14%, #fff 86%, transparent);
+}
+
+@media (min-width: 768px) {
+  .hero-visual {
+    mask-image: linear-gradient(90deg, transparent, #fff 14%, #fff 100%);
+  }
+}
+
+.webgl-slot {
+  contain: layout style paint;
+}
+
+.topo {
+  overflow: hidden;
+}
+
+.topo-drift {
+  position: absolute;
+  inset: -15%;
+  background-image: url("/assets/images/bg-texture-640.webp");
+  background-size: 420px;
+  opacity: 0.22;
+  mix-blend-mode: screen;
+}
+
+@media (min-width: 768px) {
+  .topo-drift {
+    background-image: url("/assets/images/bg-texture-1024.webp");
+    background-size: 560px;
+  }
+
+  html[data-motion="running"] .topo-drift {
+    animation: topo-move 42s linear infinite;
+  }
+
+  html[data-bg-loop="on"] .topo-drift {
+    opacity: 0;
+  }
+}
+
+html[data-motion="paused"] .topo-drift {
+  animation-play-state: paused;
+}
+
+@keyframes topo-move {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-6%, -4%, 0);
+  }
+}
+
+.spotlight-ring {
+  background: radial-gradient(180px circle at var(--mx) var(--my), rgba(201, 132, 74, 0.95), transparent 58%);
+  padding: 1px;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+}
+
+.skeleton {
+  background: #2c2824;
+  animation: skeleton-fade 1.2s ease-in-out infinite;
+}
+
+@keyframes skeleton-fade {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.text-link {
+  color: var(--color-accent-text);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+}
+
+.text-link:hover {
+  text-decoration-thickness: 2px;
+}
+
+.tactile:active {
+  transform: scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .scroll-progress,
+  .live-dot,
+  .marquee-track,
+  .draw-path,
+  .display-rest,
+  .topo-drift,
+  .mask-zoom-css,
+  .mask-full {
+    animation: none !important;
+  }
+}
