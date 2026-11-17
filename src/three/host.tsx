@@ -1,5 +1,6 @@
 import { useEffect, useState, type ComponentType } from "react";
 import { useMotionPrefs } from "../motion/MotionProvider";
+import { useSceneDemand } from "./bridge";
 
 function useWide() {
   const [wide, setWide] = useState(() => window.matchMedia("(min-width: 768px)").matches);
@@ -21,7 +22,8 @@ function lowEndDevice() {
 export function WebGLHost() {
   const { reduced, paused, fine } = useMotionPrefs();
   const wide = useWide();
-  const allowed = wide && fine && !reduced && !paused && !lowEndDevice();
+  const demand = useSceneDemand();
+  const allowed = wide && fine && !reduced && !paused && !lowEndDevice() && demand > 0;
   const [Stage, setStage] = useState<ComponentType | null>(null);
 
   useEffect(() => {

@@ -84,3 +84,39 @@ export const media = {
 export function projectPictureFor(repo: string): Picture | undefined {
   return media.projects[repo as keyof typeof media.projects];
 }
+
+export type LoopAsset = {
+  poster: string;
+  mp4: string;
+  webm: string;
+  mp4Small: string;
+  webmSmall: string;
+};
+
+function loopAsset(name: string, poster: string): LoopAsset {
+  return {
+    poster,
+    mp4: `/assets/videos/${name}-loop.mp4`,
+    webm: `/assets/videos/${name}-loop.webm`,
+    mp4Small: `/assets/videos/${name}-loop-640.mp4`,
+    webmSmall: `/assets/videos/${name}-loop-640.webm`,
+  };
+}
+
+export const loops = {
+  hero: loopAsset("hero", media.hero.src),
+  interviewee: loopAsset("ai-interviewee", media.projects["CODE-ZAX/ai-interviewee"].src),
+  jarvis: loopAsset("jarvis", media.projects["CODE-ZAX/J.A.R.V.I.S"].src),
+  chatli: loopAsset("chatli", media.projects["CODE-ZAX/chatli"].src),
+  texture: loopAsset("bg-texture", "/assets/images/bg-texture-1024.webp"),
+};
+
+const loopByRepo: Record<string, LoopAsset> = {
+  "CODE-ZAX/ai-interviewee": loops.interviewee,
+  "CODE-ZAX/J.A.R.V.I.S": loops.jarvis,
+  "CODE-ZAX/chatli": loops.chatli,
+};
+
+export function loopForRepo(repo: string) {
+  return loopByRepo[repo] ?? null;
+}

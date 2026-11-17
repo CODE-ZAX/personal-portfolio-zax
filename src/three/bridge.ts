@@ -29,10 +29,8 @@ const kinds: Record<string, string> = {
   "CODE-ZAX/electron-bill-calculator": "bill",
   "CODE-ZAX/proposal-extenstion-backend": "proposal",
   "CODE-ZAX/flutter_youtube_ext": "youtube",
-  "CODE-ZAX/J.A.R.V.I.S": "jarvis",
   "CODE-ZAX/x-clipboard-manager": "xclipy",
   "CODE-ZAX/file-organizer": "tidydesk",
-  "CODE-ZAX/ai-interviewee": "interviewee",
   "CODE-ZAX/live_subtitles": "subtitles",
   "CODE-ZAX/insiders": "insiders",
   "CODE-ZAX/chatli": "chatli",
@@ -40,4 +38,26 @@ const kinds: Record<string, string> = {
 
 export function sceneKindForRepo(repo: string) {
   return kinds[repo] ?? null;
+}
+
+let demand = 0;
+
+export function retainScene() {
+  demand += 1;
+  listeners.forEach((listener) => listener());
+  return () => {
+    demand = Math.max(0, demand - 1);
+    listeners.forEach((listener) => listener());
+  };
+}
+
+export function useSceneDemand() {
+  return useSyncExternalStore(
+    (listener) => {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+    () => demand,
+    () => 0,
+  );
 }

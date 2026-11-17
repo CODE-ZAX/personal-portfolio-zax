@@ -5,11 +5,8 @@ import * as THREE from "three";
 import { setSceneView, type SceneViewProps } from "./bridge";
 
 const cedar = "#c9844a";
-const cedarHot = "#e7b184";
 const silver = "#d9d3cb";
 const graphite = "#141311";
-const warm = "#c8c3bc";
-const frost = "#f3f0ea";
 
 function Backdrop({ color }: { color: string }) {
   return (
@@ -25,7 +22,7 @@ function Lights() {
     <>
       <ambientLight intensity={0.72} />
       <directionalLight position={[3.2, 4.2, 5]} intensity={1.35} />
-      <pointLight position={[-2.2, 1.2, 2.4]} intensity={0.55} color={cedarHot} />
+      <pointLight position={[-2.2, 1.2, 2.4]} intensity={0.55} color="#e7b184" />
     </>
   );
 }
@@ -51,65 +48,6 @@ function Drift({
     group.rotation.z = Math.sin(t * speed * 0.3) * spin * 0.35;
   });
   return <group ref={ref}>{children}</group>;
-}
-
-function Bubble({
-  position,
-  scale = 1,
-  color,
-  phase,
-  emissive = 0,
-}: {
-  position: [number, number, number];
-  scale?: number;
-  color: string;
-  phase: number;
-  emissive?: number;
-}) {
-  const ref = useRef<THREE.Group>(null);
-  useFrame(({ clock }) => {
-    const group = ref.current;
-    if (!group) return;
-    const t = clock.elapsedTime;
-    group.position.set(
-      position[0] + Math.sin(t * 0.45 + phase) * 0.08,
-      position[1] + Math.sin(t * 0.7 + phase) * 0.1,
-      position[2],
-    );
-    group.rotation.z = Math.sin(t * 0.4 + phase) * 0.14;
-    group.rotation.y = Math.sin(t * 0.28 + phase) * 0.35;
-  });
-  return (
-    <group ref={ref} scale={scale}>
-      <mesh>
-        <sphereGeometry args={[1, 28, 18]} />
-        <meshPhysicalMaterial
-          color={color}
-          roughness={0.38}
-          metalness={0.04}
-          transparent
-          opacity={0.92}
-          clearcoat={0.85}
-          clearcoatRoughness={0.32}
-          emissive={cedar}
-          emissiveIntensity={emissive}
-        />
-      </mesh>
-      <mesh position={[0.35, -0.78, 0.15]} rotation={[0.2, 0.2, -0.7]}>
-        <coneGeometry args={[0.32, 0.46, 5]} />
-        <meshPhysicalMaterial
-          color={color}
-          roughness={0.38}
-          metalness={0.04}
-          transparent
-          opacity={0.92}
-          clearcoat={0.7}
-          emissive={cedar}
-          emissiveIntensity={emissive}
-        />
-      </mesh>
-    </group>
-  );
 }
 
 function WaveBars({ count = 26, width = 1.7, color = silver }: { count?: number; width?: number; color?: string }) {
@@ -141,168 +79,6 @@ function WaveBars({ count = 26, width = 1.7, color = silver }: { count?: number;
     [geometry, material],
   );
   return <instancedMesh ref={ref} args={[geometry, material, count]} />;
-}
-
-function HeroThreads() {
-  const total = 14;
-  const points = 42;
-  const mouse = useRef(new THREE.Vector2(0.72, 0.46));
-  const scroll = useRef(0);
-  const geos = useMemo(
-    () =>
-      Array.from({ length: total }, () => {
-        const geo = new THREE.BufferGeometry();
-        geo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(points * 3), 3));
-        geo.setAttribute("color", new THREE.BufferAttribute(new Float32Array(points * 3), 3));
-        return geo;
-      }),
-    [],
-  );
-  const lines = useMemo(
-    () => geos.map((geo) => new THREE.Line(geo, new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.92 }))),
-    [geos],
-  );
-
-  useEffect(() => {
-    const onMove = (event: PointerEvent) => {
-      mouse.current.set(event.clientX / window.innerWidth, 1 - event.clientY / window.innerHeight);
-    };
-    const onScroll = () => {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      scroll.current = max > 0 ? window.scrollY / max : 0;
-    };
-    window.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => {
-      window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("scroll", onScroll);
-      lines.forEach((line) => {
-        line.geometry.dispose();
-        (line.material as THREE.Material).dispose();
-      });
-    };
-  }, [lines]);
-
-  useFrame(({ clock }) => {
-    const t = clock.elapsedTime;
-    const mx = mouse.current.x - 0.5;
-    const my = mouse.current.y - 0.5;
-    geos.forEach((geo, index) => {
-      const n = index / (total - 1);
-      const position = geo.getAttribute("position");
-      const color = geo.getAttribute("color");
-      for (let point = 0; point < points; point += 1) {
-        const u = point / (points - 1);
-        const x = (u - 0.5) * 7.4;
-        const y =
-          (n - 0.5) * 3.15 +
-          Math.sin(u * (2.6 + n * 5.4) + t * (0.32 + n * 0.18) + index) * (0.16 + n * 0.1) +
-          Math.sin(u * 10.5 - t * 0.22 + index) * 0.045 +
-          my * 0.28 * Math.sin(u * 3.1 + index) +
-          scroll.current * 0.35 * (n - 0.5);
-        const z = Math.sin(u * 3.4 + t * 0.28 + index) * 0.42 + mx * (0.15 + n * 0.2);
-        position.setXYZ(point, x, y, z);
-        const cedarMix = Math.min(1, Math.max(0, (x + 0.4) / 2.4));
-        color.setXYZ(
-          point,
-          0.78 * (1 - cedarMix) + 0.86 * cedarMix,
-          0.8 * (1 - cedarMix) + 0.52 * cedarMix,
-          0.82 * (1 - cedarMix) + 0.3 * cedarMix,
-        );
-      }
-      position.needsUpdate = true;
-      color.needsUpdate = true;
-    });
-  });
-
-  return (
-    <group>
-      {lines.map((line, index) => (
-        <primitive key={index} object={line} />
-      ))}
-    </group>
-  );
-}
-
-function DottedRing({ radius, speed, color, tilt }: { radius: number; speed: number; color: string; tilt: [number, number, number] }) {
-  const ref = useRef<THREE.Group>(null);
-  const positions = useMemo(() => {
-    const count = 56;
-    const data = new Float32Array(count * 3);
-    for (let index = 0; index < count; index += 1) {
-      const angle = (index / count) * Math.PI * 2;
-      data[index * 3] = Math.cos(angle) * radius;
-      data[index * 3 + 1] = 0;
-      data[index * 3 + 2] = Math.sin(angle) * radius;
-    }
-    return data;
-  }, [radius]);
-  useFrame((_, delta) => {
-    if (ref.current) ref.current.rotation.y += delta * speed;
-  });
-  return (
-    <group ref={ref} rotation={tilt}>
-      <points>
-        <bufferGeometry>
-          <bufferAttribute attach="attributes-position" args={[positions, 3]} />
-        </bufferGeometry>
-        <pointsMaterial color={color} size={0.045} toneMapped={false} />
-      </points>
-    </group>
-  );
-}
-
-function Jarvis() {
-  const core = useRef<THREE.Mesh>(null);
-  useFrame(({ clock }) => {
-    if (core.current) core.current.scale.setScalar(1 + Math.sin(clock.elapsedTime * 2.1) * 0.12);
-  });
-  return (
-    <Drift amp={0.1} speed={0.55} spin={0.18}>
-      <mesh>
-        <sphereGeometry args={[1.15, 40, 28]} />
-        <meshStandardMaterial color="#2a2622" roughness={0.86} metalness={0.08} />
-      </mesh>
-      <mesh ref={core}>
-        <sphereGeometry args={[0.28, 24, 16]} />
-        <meshBasicMaterial color={cedarHot} toneMapped={false} />
-      </mesh>
-      <mesh rotation={[Math.PI / 2.2, 0, 0]}>
-        <torusGeometry args={[1.16, 0.028, 12, 64]} />
-        <meshStandardMaterial color={cedar} roughness={0.4} metalness={0.2} emissive={cedar} emissiveIntensity={0.35} />
-      </mesh>
-      <DottedRing radius={1.28} speed={0.35} color={silver} tilt={[0.4, 0, 0.2]} />
-      <DottedRing radius={1.42} speed={-0.22} color={cedarHot} tilt={[1.1, 0.2, 0]} />
-      <DottedRing radius={1.05} speed={0.5} color="#8d837a" tilt={[1.7, 0.4, 0.3]} />
-    </Drift>
-  );
-}
-
-function Chatli() {
-  return (
-    <>
-      <Backdrop color={warm} />
-      <Lights />
-      <Bubble position={[-0.85, 0.7, -0.4]} scale={0.62} color={frost} phase={0.2} />
-      <Bubble position={[0.9, 0.55, -0.2]} scale={0.5} color="#e7e2dc" phase={1.4} />
-      <Bubble position={[-0.7, -0.75, 0.1]} scale={0.58} color={frost} phase={2.1} />
-      <Bubble position={[0.85, -0.7, 0]} scale={0.48} color="#ddd8d2" phase={2.8} />
-      <Bubble position={[0.05, 0.05, 0.45]} scale={0.78} color={cedarHot} phase={0.6} emissive={0.18} />
-    </>
-  );
-}
-
-function Interviewee() {
-  return (
-    <>
-      <Backdrop color={graphite} />
-      <Lights />
-      <Bubble position={[-1.15, 0.05, 0]} scale={0.72} color="#b7b1aa" phase={0.4} emissive={0.12} />
-      <Bubble position={[1.15, -0.02, 0]} scale={0.72} color="#b7b1aa" phase={1.8} emissive={0.12} />
-      <WaveBars />
-    </>
-  );
 }
 
 function Applix() {
@@ -510,15 +286,6 @@ function Insiders() {
 }
 
 const scenes: Record<string, () => ReactNode> = {
-  hero: () => (
-    <>
-      <Backdrop color={graphite} />
-      <HeroThreads />
-    </>
-  ),
-  jarvis: Jarvis,
-  chatli: Chatli,
-  interviewee: Interviewee,
   applix: Applix,
   bill: Bill,
   proposal: Proposal,
@@ -529,14 +296,14 @@ const scenes: Record<string, () => ReactNode> = {
   insiders: Insiders,
 };
 
-function AimCamera({ kind }: { kind: string }) {
+function AimCamera() {
   const camera = useThree((state) => state.camera);
   useEffect(() => {
     if (!(camera instanceof THREE.PerspectiveCamera)) return;
-    camera.position.set(0, 0, kind === "hero" ? 5.2 : 3.35);
-    camera.fov = kind === "hero" ? 46 : 38;
+    camera.position.set(0, 0, 3.35);
+    camera.fov = 38;
     camera.updateProjectionMatrix();
-  }, [camera, kind]);
+  }, [camera]);
   return null;
 }
 
@@ -544,7 +311,7 @@ function SceneSwitch({ kind }: { kind: string }) {
   const Scene = scenes[kind] ?? scenes.applix;
   return (
     <>
-      <AimCamera kind={kind} />
+      <AimCamera />
       <Scene />
     </>
   );

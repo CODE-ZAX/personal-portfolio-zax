@@ -10,6 +10,7 @@ import { SectionBoundary } from "./components/ui/SectionBoundary";
 import { LenisRoot } from "./motion/LenisRoot";
 import { Marquee } from "./motion/Marquee";
 import { MotionProvider } from "./motion/MotionProvider";
+import { BgLoop } from "./components/media/BgLoop";
 import { WebGLHost } from "./three/host";
 
 const ProjectsSection = lazy(() => import("./components/sections/ProjectsSection"));
@@ -19,6 +20,7 @@ export default function App() {
     <MotionProvider>
       <LenisRoot />
       <WebGLHost />
+      <BgLoop />
       <a className="skip-link" href="#content">
         Skip to content
       </a>

@@ -1,9 +1,10 @@
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
-import type { FocusEvent } from "react";
+import { useEffect, useRef, type FocusEvent } from "react";
 import type { Project } from "../../data/profile";
-import type { Picture as PictureSource } from "../../data/media";
+import { loopForRepo, type Picture as PictureSource } from "../../data/media";
 import { useMotionPrefs } from "../../motion/MotionProvider";
-import { sceneKindForRepo, useSceneView } from "../../three/bridge";
+import { retainScene, sceneKindForRepo, useSceneView } from "../../three/bridge";
+import { LoopVideo } from "../media/LoopVideo";
 import { Picture } from "../media/Picture";
 
 type Props = {
@@ -16,9 +17,32 @@ type Props = {
 };
 
 export function ProjectCard({ project, image, layoutId, onOpen, onReveal, className }: Props) {
-  const { reduced, fine } = useMotionPrefs();
+  const { reduced, paused, fine } = useMotionPrefs();
   const SceneView = useSceneView();
   const kind = sceneKindForRepo(project.repo);
+  const loop = loopForRepo(project.repo);
+  const frameRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const node = frameRef.current;
+    if (!node || !kind) return;
+    let release: (() => void) | undefined;
+    const sync = (inView: boolean) => {
+      release?.();
+      release = undefined;
+      const wide = window.matchMedia("(min-width: 768px)").matches;
+      if (inView && wide && fine && !reduced && !paused) release = retainScene();
+    };
+    const observer = new IntersectionObserver(
+      ([entry]) => sync(Boolean(entry?.isIntersecting)),
+      { rootMargin: "120px" },
+    );
+    observer.observe(node);
+    return () => {
+      observer.disconnect();
+      release?.();
+    };
+  }, [kind, fine, reduced, paused]);
   const tilt = fine && !reduced;
   const px = useMotionValue(0.5);
   const py = useMotionValue(0.5);
@@ -52,8 +76,9 @@ export function ProjectCard({ project, image, layoutId, onOpen, onReveal, classN
       <motion.span className="block h-full" style={{ rotateX, rotateY, transformPerspective: 900 }}>
       <span className="spotlight-ring pointer-events-none absolute inset-0 rounded-[1.75rem] opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100" />
       <span className="relative flex h-full flex-col overflow-hidden rounded-[1.7rem] bg-raised">
-        <span className="relative block">
+        <span ref={frameRef} className="relative block">
           <Picture image={image} className="aspect-[4/3] w-full object-cover" />
+          {loop ? <LoopVideo loop={loop} className="absolute inset-0 h-full w-full object-cover" /> : null}
           {SceneView && kind ? <SceneView kind={kind} className="pointer-events-none absolute inset-0" /> : null}
         </span>
         <span className="flex flex-1 flex-col px-5 py-4">

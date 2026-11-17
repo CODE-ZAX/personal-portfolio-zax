@@ -282,6 +282,10 @@ html[data-reduce="true"] .display-rest {
   html[data-motion="running"] .topo-drift {
     animation: topo-move 42s linear infinite;
   }
+
+  html[data-bg-loop="on"] .topo-drift {
+    opacity: 0;
+  }
 }
 
 html[data-motion="paused"] .topo-drift {

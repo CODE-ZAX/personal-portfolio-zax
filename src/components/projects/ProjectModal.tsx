@@ -2,11 +2,12 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, type RefObject } from "react";
 import { createPortal } from "react-dom";
 import { profile, type Project } from "../../data/profile";
-import { projectPictureFor } from "../../data/media";
+import { loopForRepo, projectPictureFor } from "../../data/media";
 import { slug } from "../../lib/slug";
 import { getLenis } from "../../motion/lenisBridge";
 import { sceneKindForRepo, useSceneView } from "../../three/bridge";
 import { SectionHeading } from "../../type/SectionHeading";
+import { LoopVideo } from "../media/LoopVideo";
 import { Picture } from "../media/Picture";
 
 export function ProjectModal({ openRepo, onClose }: { openRepo: string | null; onClose: () => void }) {
@@ -78,6 +79,7 @@ function Dialog({
   const image = projectPictureFor(project.repo);
   const SceneView = useSceneView();
   const kind = sceneKindForRepo(project.repo);
+  const loop = loopForRepo(project.repo);
   const titleId = `title-${slug(project.repo)}`;
   const links = [
     { label: "Open the repository", url: project.url },
@@ -109,6 +111,7 @@ function Dialog({
           {image ? (
             <Picture image={image} className="h-[34vh] w-full object-cover" />
           ) : null}
+          {loop ? <LoopVideo loop={loop} className="absolute inset-0 h-full w-full object-cover" /> : null}
           {SceneView && kind ? <SceneView kind={kind} className="pointer-events-none absolute inset-0" /> : null}
           <button
             type="button"
