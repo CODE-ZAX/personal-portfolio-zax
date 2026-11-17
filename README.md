@@ -6,9 +6,11 @@ Personal portfolio for Muhammad Faraz (GitHub: [CODE-ZAX](https://github.com/COD
 
 Visual direction follows **[MiniMax-AI/frontend-dev](https://github.com/MiniMax-AI/skills/blob/main/skills/frontend-dev/SKILL.md)** from the [VoltAgent awesome-agent-skills](https://github.com/VoltAgent/awesome-agent-skills) catalog.
 
-That skill is the one written for production marketing pages: asymmetric layout, one accent, Outfit and Geist, and a motion system on [Motion](https://motion.dev/) (Framer Motion). This site uses its fluid setting (motion intensity 6): a load sequence in the hero, scroll-triggered reveals, staggered lists, a layout open on each project, a magnetic primary link, and a pointer tilt on the portrait. Scroll progress uses CSS `animation-timeline`. A pinned GSAP scroll-hijack is the skill’s cinematic step and is not included, so the page stays a small static bundle. Background motion can be paused, and `prefers-reduced-motion` turns the motion off.
+That skill is the one written for production marketing pages: asymmetric layout, one accent, Outfit and Geist, and a split between [Motion](https://motion.dev/) (Framer Motion) for interface motion and GSAP ScrollTrigger for pinned scroll. This page uses the immersive setting: a lazy WebGL field in the hero, a pinned horizontal project rail on desktop, a kinetic marquee, a mask reveal, a scramble on the handle, an SVG path draw, magnetic links, and a liquid-glass dock. Lenis smooths desktop scrolling. Coarse pointers and reduced motion get a static hero still. A visible Pause control stops looping motion.
 
-Dials used for this page: design variance 8, motion intensity 6, visual density 4.
+Dials used for this page: design variance 9, motion intensity 9, visual density 4. The palette is charcoal graphite with one muted cedar accent, matched to the hero still.
+
+Images live in `public/assets/images`. `npm run assets` resizes the approved stills and redraws the generative project compositions. Paths are listed in `src/data/media.ts`.
 
 ## Content
 

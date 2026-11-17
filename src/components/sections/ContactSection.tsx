@@ -1,60 +1,44 @@
-import { GithubLogo } from "@phosphor-icons/react/GithubLogo";
-import { GlobeSimple } from "@phosphor-icons/react/GlobeSimple";
-import { LinkedinLogo } from "@phosphor-icons/react/LinkedinLogo";
-import { EnvelopeSimple } from "@phosphor-icons/react/EnvelopeSimple";
 import { profile } from "../../data/profile";
 import { MagneticLink } from "../../motion/MagneticLink";
-import { Reveal } from "../../motion/Reveal";
-
-const icons: Record<string, typeof EnvelopeSimple> = {
-  "mailto:mianmuhammadfaraz@hotmail.com": EnvelopeSimple,
-  "https://github.com/CODE-ZAX": GithubLogo,
-  "https://www.linkedin.com/in/mian-muhammad-faraz-93584521a/": LinkedinLogo,
-  "https://sirzaxx.com": GlobeSimple,
-  "https://sirzaxx.info": GlobeSimple,
-};
 
 export function ContactSection() {
-  const primary = profile.contact[0];
-  const rest = profile.contact.slice(1);
-  if (!primary) {
-    return null;
-  }
+  const primary = profile.contact.find((item) => item.href.startsWith("mailto:"));
+  const rest = profile.contact.filter((item) => item !== primary);
 
   return (
-    <section id="contact" className="px-4 py-16 md:px-8 md:py-24">
-      <Reveal>
-        <div className="mx-auto grid max-w-[1400px] gap-10 lg:grid-cols-12">
-          <div className="lg:col-span-5">
-            <h2 className="font-display text-4xl tracking-tighter md:text-5xl">Contact</h2>
-            <p className="mt-4 max-w-[36ch] leading-relaxed text-muted">{profile.contactIntro}</p>
+    <section id="contact" className="relative px-4 py-20 md:px-8 md:py-28">
+      <div className="topo pointer-events-none absolute inset-0" aria-hidden="true" />
+      <div className="relative mx-auto grid w-full max-w-[1400px] gap-10 md:grid-cols-12">
+        <div className="md:col-span-7">
+          <p className="font-display text-sm uppercase tracking-[0.18em] text-accent-text">Contact</p>
+          <h2 className="mt-3 max-w-[10ch] font-display text-4xl tracking-tighter md:text-6xl">Write to Faraz.</h2>
+          <p className="mt-5 max-w-[65ch] text-base leading-relaxed text-muted">{profile.contactIntro}</p>
+          {primary ? (
             <MagneticLink
               href={primary.href}
-              className="mt-8 inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 font-display text-base font-semibold text-surface"
+              className="mt-8 inline-flex max-w-full items-center rounded-full bg-accent px-5 py-3 font-display text-base font-semibold text-accent-ink md:text-lg"
             >
-              <EnvelopeSimple size={18} aria-hidden="true" />
-              {primary.label}
+              {primary.label === "Write to Faraz" ? "mianmuhammadfaraz@hotmail.com" : primary.label}
             </MagneticLink>
-          </div>
-          <ul className="border-t border-line lg:col-span-7">
-            {rest.map((item) => {
-              const Icon = icons[item.href] ?? GlobeSimple;
-              return (
-                <li key={item.href + item.label} className="border-b border-line">
-                  <a
-                    href={item.href}
-                    className="flex items-center gap-3 py-4 text-lg"
-                    {...(item.external ? { target: "_blank", rel: "noreferrer" } : {})}
-                  >
-                    <Icon size={20} aria-hidden="true" className="text-accent" />
-                    <span className="text-link">{item.label}</span>
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
+          ) : null}
         </div>
-      </Reveal>
+        <ul className="divide-y divide-line border-y border-line md:col-span-4 md:col-start-9">
+          {rest.map((item) => (
+            <li key={item.label}>
+              <MagneticLink
+                href={item.href}
+                external={item.external}
+                className="flex w-full items-center justify-between gap-4 py-4 font-display text-base text-ink"
+              >
+                <span>{item.label}</span>
+                <svg aria-hidden="true" viewBox="0 0 16 16" className="h-4 w-4 shrink-0 text-accent-text">
+                  <path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.4" />
+                </svg>
+              </MagneticLink>
+            </li>
+          ))}
+        </ul>
+      </div>
     </section>
   );
 }

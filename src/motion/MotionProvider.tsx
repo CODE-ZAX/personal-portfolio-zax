@@ -1,70 +1,72 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { MotionConfig } from "motion/react";
+import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
 type MotionPrefs = {
   reduced: boolean;
   paused: boolean;
-  allowPointerMotion: boolean;
-  togglePaused: () => void;
+  fine: boolean;
+  togglePause: () => void;
 };
 
-const MotionPrefsContext = createContext<MotionPrefs | null>(null);
+const MotionContext = createContext<MotionPrefs | null>(null);
 
 function readReduced() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-function readFinePointer() {
+function readFine() {
   return window.matchMedia("(pointer: fine)").matches;
 }
 
 export function MotionProvider({ children }: { children: ReactNode }) {
   const [reduced, setReduced] = useState(readReduced);
-  const [finePointer, setFinePointer] = useState(readFinePointer);
-  const [paused, setPaused] = useState(readReduced);
+  const [fine, setFine] = useState(readFine);
+  const [paused, setPaused] = useState(() => readReduced() || document.documentElement.dataset.motion === "paused");
 
   useEffect(() => {
-    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const pointerQuery = window.matchMedia("(pointer: fine)");
-    const onMotion = () => {
-      setReduced(motionQuery.matches);
-      if (motionQuery.matches) setPaused(true);
+    const reduceQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const fineQuery = window.matchMedia("(pointer: fine)");
+    const onReduce = () => {
+      const next = reduceQuery.matches;
+      setReduced(next);
+      if (next) setPaused(true);
     };
-    const onPointer = () => setFinePointer(pointerQuery.matches);
-    motionQuery.addEventListener("change", onMotion);
-    pointerQuery.addEventListener("change", onPointer);
+    const onFine = () => setFine(fineQuery.matches);
+    reduceQuery.addEventListener("change", onReduce);
+    fineQuery.addEventListener("change", onFine);
     return () => {
-      motionQuery.removeEventListener("change", onMotion);
-      pointerQuery.removeEventListener("change", onPointer);
+      reduceQuery.removeEventListener("change", onReduce);
+      fineQuery.removeEventListener("change", onFine);
     };
   }, []);
 
   useEffect(() => {
     document.documentElement.dataset.motion = paused || reduced ? "paused" : "running";
+    document.documentElement.dataset.reduce = reduced ? "true" : "false";
   }, [paused, reduced]);
 
   const value = useMemo<MotionPrefs>(
     () => ({
       reduced,
       paused: paused || reduced,
-      allowPointerMotion: !reduced && finePointer,
-      togglePaused: () => {
+      fine,
+      togglePause: () => {
         if (reduced) return;
         setPaused((current) => !current);
       },
     }),
-    [reduced, paused, finePointer],
+    [reduced, paused, fine],
   );
 
   return (
-    <MotionPrefsContext.Provider value={value}>
-      <MotionConfig reducedMotion="user">{children}</MotionConfig>
-    </MotionPrefsContext.Provider>
+    <MotionContext.Provider value={value}>
+      <MotionConfig reducedMotion={reduced ? "always" : "user"}>{children}</MotionConfig>
+    </MotionContext.Provider>
   );
 }
 
 export function useMotionPrefs() {
-  const value = useContext(MotionPrefsContext);
+  const value = useContext(MotionContext);
   if (!value) {
     throw new Error("useMotionPrefs must be used inside MotionProvider");
   }

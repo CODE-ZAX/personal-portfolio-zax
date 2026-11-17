@@ -57,7 +57,10 @@ export const profile = {
   location: "Islamabad",
   company: "Iplex Private Limited",
   portrait: {
-    src: "/assets/images/portrait-faraz.png",
+    src: "/assets/images/portrait-faraz-460.webp",
+    srcSet: "/assets/images/portrait-faraz-320.webp 320w, /assets/images/portrait-faraz-460.webp 460w",
+    width: 460,
+    height: 460,
     alt: "Portrait of Muhammad Faraz",
   },
   headline: "Ships the product, then stays for the launch.",

@@ -2,16 +2,14 @@ import { profile } from "../data/profile";
 
 export function SiteFooter() {
   return (
-    <footer className="px-4 py-12 md:px-8">
-      <div className="mx-auto grid max-w-[1400px] gap-6 border-t border-line pt-8 lg:grid-cols-12">
-        <blockquote className="max-w-[46ch] font-display text-xl leading-snug tracking-tight lg:col-span-8">
-          {profile.quote}
-        </blockquote>
-        <p className="text-sm leading-relaxed text-muted lg:col-span-4 lg:text-right">
+    <footer className="border-t border-line px-4 py-8 md:px-8">
+      <div className="mx-auto flex w-full max-w-[1400px] flex-col gap-2 text-sm text-muted md:flex-row md:items-center md:justify-between">
+        <p>
           {profile.name}
-          <br />
-          {profile.handle}
+          <span aria-hidden="true"> · </span>
+          {profile.location}
         </p>
+        <p>{profile.company}</p>
       </div>
     </footer>
   );

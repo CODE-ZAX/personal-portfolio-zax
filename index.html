@@ -7,13 +7,30 @@
       name="description"
       content="Muhammad Faraz builds web, desktop, and mobile products. Selected work, the stack he publishes, and ways to reach him."
     />
-    <meta name="theme-color" content="#e7ece8" />
+    <meta name="theme-color" content="#141311" />
     <title>Muhammad Faraz</title>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/outfit-latin-600.woff2" as="font" type="font/woff2" crossorigin />
+    <link
+      rel="preload"
+      as="image"
+      href="/assets/images/hero-poster-1280.webp"
+      imagesrcset="/assets/images/hero-poster-640.webp 640w, /assets/images/hero-poster-1280.webp 1280w"
+      imagesizes="(max-width: 767px) 100vw, 58vw"
+      fetchpriority="high"
+    />
+    <style>
+      html,
+      body {
+        background: #141311;
+        color: #f4efe8;
+      }
+    </style>
     <script>
       try {
         var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
         document.documentElement.dataset.motion = reduce ? "paused" : "running";
+        document.documentElement.dataset.reduce = reduce ? "true" : "false";
       } catch (e) {}
     </script>
   </head>
