@@ -197,6 +197,55 @@ html[data-motion="paused"] .draw-path {
   }
 }
 
+.mask-chapter {
+  background: var(--color-graphite);
+}
+
+.mask-zoom {
+  transform-origin: center center;
+}
+
+.video-letter-mask {
+  mask-image: var(--letter-mask);
+  -webkit-mask-image: var(--letter-mask);
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: 92% auto;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: 92% auto;
+}
+
+html[data-motion="running"] .mask-zoom-css {
+  animation: mask-grow linear both;
+  animation-timeline: view();
+  animation-range: entry 8% cover 88%;
+}
+
+html[data-motion="running"] .mask-full {
+  animation: mask-fade linear both;
+  animation-timeline: view();
+  animation-range: cover 62% cover 96%;
+}
+
+@keyframes mask-grow {
+  from {
+    transform: scale(0.72);
+  }
+  to {
+    transform: scale(3.4);
+  }
+}
+
+@keyframes mask-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .display {
   position: relative;
   z-index: 30;
@@ -353,7 +402,9 @@ html[data-motion="paused"] .topo-drift {
   .marquee-track,
   .draw-path,
   .display-rest,
-  .topo-drift {
+  .topo-drift,
+  .mask-zoom-css,
+  .mask-full {
     animation: none !important;
   }
 }

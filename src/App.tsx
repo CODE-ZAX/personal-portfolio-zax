@@ -11,6 +11,8 @@ import { LenisRoot } from "./motion/LenisRoot";
 import { Marquee } from "./motion/Marquee";
 import { MotionProvider } from "./motion/MotionProvider";
 import { BgLoop } from "./components/media/BgLoop";
+import { loops } from "./data/media";
+import { VideoMaskChapter } from "./type/VideoMaskChapter";
 import { WebGLHost } from "./three/host";
 
 const ProjectsSection = lazy(() => import("./components/sections/ProjectsSection"));
@@ -25,11 +27,12 @@ export default function App() {
         Skip to content
       </a>
       <div className="scroll-progress" aria-hidden="true" />
-      <div id="page">
+      <div id="page" className="relative z-[1]">
         <GlassDock />
         <main id="content">
           <HeroSection />
           <Marquee />
+          <VideoMaskChapter label="Selected work" loop={loops.hero} />
           <SectionBoundary>
             <Suspense fallback={<ProjectsSkeleton />}>
               <ProjectsSection />
@@ -37,6 +40,7 @@ export default function App() {
           </SectionBoundary>
           <PracticeSection />
           <AboutSection />
+          <VideoMaskChapter label="Write" loop={loops.chatli} />
           <ContactSection />
         </main>
         <SiteFooter />
